@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import Agora from 'agora-rtc-sdk';
 import AgoraRTC from 'agora-rtc-sdk-ng';
+
 export default function AgoraVoice() {
+  const [mute, setMute] = useState(false);
   // const client = AgoraRTC.createClient({ mode: 'live', codec: 'vp8' });
   var rtc = {
     // For the local client.
@@ -65,11 +67,81 @@ export default function AgoraVoice() {
     // Leave the channel.
     await rtc.client.leave();
   }
+
+  async function muteCall() {
+    if (mute === false) {
+      rtc.localAudioTrack.setVolume(0);
+    } else {
+      rtc.localAudioTrack.setVolume(50);
+    }
+  }
   //startBasicCall();
   return (
-    <div className='App'>
-      <button onClick={startBasicCall}>JOIN CALL</button>
-      <button onClick={leaveCall}>End</button>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        margin: '0 auto',
+        height: '100vh',
+        width: '60vw',
+        backgroundColor: 'lightblue',
+      }}
+    >
+      <h2>Welcome to Neospace Voice Call</h2>
+
+      <div
+        style={{
+          height: '30vh',
+          backgroundColor: 'pink',
+          border: '3px solid black',
+        }}
+      >
+        host
+      </div>
+      <div
+        style={{
+          height: '30vh',
+          backgroundColor: 'yellow',
+          border: '3px solid black',
+        }}
+      >
+        Audience
+      </div>
+      <div
+        style={{
+          height: '20vh',
+          backgroundColor: 'orange',
+          border: '3px solid black',
+        }}
+      >
+        control
+        <div
+          style={{
+            margin: '5vh 0 0 30vh',
+          }}
+        >
+          <button
+            onClick={startBasicCall}
+            style={{ marginRight: '15px', fontSize: '20px' }}
+          >
+            JOIN CALL
+          </button>
+
+          <button
+            onClick={(e) => {
+              console.log('muted', mute);
+              setMute(!mute);
+              muteCall();
+            }}
+            style={{ marginRight: '15px', fontSize: '20px' }}
+          >
+            MUTE
+          </button>
+          <button onClick={leaveCall} style={{ fontSize: '20px' }}>
+            END CALL
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
